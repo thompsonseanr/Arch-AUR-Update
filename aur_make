@@ -77,7 +77,7 @@ dirLoop () {
 			aur_update $d
 		else
 			echo
-			echo "Error: directory $(pwd)"
+			echo "Error: directory $parentDir"
 			echo "is not a git repository or AUR applicaton."
 		fi
 	else 
@@ -85,8 +85,9 @@ dirLoop () {
 			aur_update 
 		else
 			echo
-			echo "Error: directory $(pwd)"
+			echo "Error!: directory $parentDir"
 			echo "is not a git repository or AUR applicaton."
+			exit
 		fi
 	fi
 	done
