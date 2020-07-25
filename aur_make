@@ -12,7 +12,7 @@ aur_update () {
 		while : 
 		do
 			echo
-			echo "Show git pull output? [Y/n]: "
+			echo ":: Show git pull output? [Y/n]: "
 			read usrGitIn
 			usrGitIn=${usrGitIn:0:1} 
 			if [[ "${usrGitIn^}" == "Y" ]]; then 
@@ -28,7 +28,7 @@ aur_update () {
 		while [[ "$whileBrk" == false ]];
 			do
 			echo
-			echo "Proceed with $softName package build? [Y/n]: "
+			echo ":: Proceed with $softName package build? [Y/n]: "
 			read usrIn
 			usrIn=${usrIn:0:1}
 			if [[ "${usrIn^}" == "Y" ]]; then
@@ -37,7 +37,7 @@ aur_update () {
 				do	
 					whileBrk=true
 					echo
-					echo "Clean $softName repo files? [Y/n]: "
+					echo ":: Clean $softName repo files? [Y/n]: "
 					read userChoice
 					userChoice=${userChoice:0:1}		
 					if [[ "${userChoice^}" == "Y" ]]; then
@@ -78,7 +78,7 @@ if [[ $1 != "-s" ]]; then
 	while : 
 	do
 		echo
-		echo "Run AUR Package Update for all installed applications? [Y/n]"
+		echo ":: Run AUR Package Update for all installed applications? [Y/n]"
 		read resp
 		resp=${resp:0:1}
 			if [[ "${resp^}" == "Y" ]]; then 
