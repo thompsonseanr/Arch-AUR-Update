@@ -1,56 +1,102 @@
 #!/bin/bash
 
 # Update AUR package in their respective directory
-dir=$(pwd)
-dir=${dir##*/}
-dir=${dir^^}
 
-gitPull=$(git pull)
-if [[ "$gitPull" != "Already up to date." ]]; then 
+parentDir=$(pwd)
+softName=${parentDir##*/}
+softName=${softName^^}
+
+aur_update () {
+	gitPull=$(git pull)
+	if [[ "$gitPull" != "Already up to date." ]]; then 
+		while : 
+		do
+			echo
+			echo "Show git pull output? [Y/n]: "
+			read usrGitIn
+			usrGitIn=${usrGitIn:0:1} 
+			if [[ "${usrGitIn^}" == "Y" ]]; then 
+				echo "$gitPull"
+				break	
+			elif [[ "${usrGitIn^}" == "N" ]]; then
+				break
+			fi
+		done
+		
+		whileBrk=false
+		
+		while [[ "$whileBrk" == false ]];
+			do
+			echo
+			echo "Proceed with $softName package build? [Y/n]: "
+			read usrIn
+			usrIn=${usrIn:0:1}
+			if [[ "${usrIn^}" == "Y" ]]; then
+				makepkg -sri
+				while :
+				do	
+					whileBrk=true
+					echo
+					echo "Clean $softName repo files? [Y/n]: "
+					read userChoice
+					userChoice=${userChoice:0:1}		
+					if [[ "${userChoice^}" == "Y" ]]; then
+						git clean -fdx
+						break
+					elif [[ "${userChoice^}" == "N" ]]; then
+						break
+					fi
+				done				
+				echo
+				echo "::: AUR $softName package now updated and installed. :::"
+			elif [[ "${firstLet^}" == "N" ]]; then
+				echo "Alright, maybe next time; Later tater!"
+				break
+			fi
+		done	
+	else
+		echo
+		echo $gitPull 
+    	echo "::: Stay cool :::"
+	fi
+}
+
+
+dirLoop () {
+	for d in $parentDir/*
+	do
+		cd "$d" 
+		if [[ -e .git && -d .git ]]; then
+			aur_update
+		else
+			echo "Not a git repository."
+		fi
+	done
+}
+
+if [[ $1 != "-s" ]]; then
 	while : 
 	do
 		echo
-		echo "Show git pull output? [Y/n]: "
-		read usrGitIn
-		usrGitIn=${usrGitIn:0:1} 
-		if [[ "${usrGitIn^}" == "Y" ]]; then 
-			echo "$gitPull"
-			break	
-		elif [[ "${usrGitIn^}" == "N" ]]; then
-			break
-		fi
-	done
-	whileBrk=false
-	while [[ "$whileBrk" == false ]];
-	do
-		echo
-		echo "Proceed with $dir package build? [Y/n]: "
-		read usrIn
-		usrIn=${usrIn:0:1}
-		if [[ "${usrIn^}" == "Y" ]]; then
-			makepkg -sri
-			while :
-			do	
-				whileBrk=true
+		echo "Run AUR Package Update for all installed applications? [Y/n]"
+		read resp
+		resp=${resp:0:1}
+			if [[ "${resp^}" == "Y" ]]; then 
 				echo
-				echo "Clean $dir repo files? [Y/n]: "
-				read userChoice
-				userChoice=${userChoice:0:1}		
-				if [[ "${userChoice^}" == "Y" ]]; then
-					git clean -fdx
-					break
-				elif [[ "${userChoice^}" == "N" ]]; then
-					break
-				fi
-			done
-			echo
-			echo "::: AUR $dir package now updated and installed. :::"
-		elif [[ "${firstLet^}" == "N" ]]; then
-			echo "Alright, maybe next time; Later tater!"
-			break
-		fi
-	done	
+		    	dirLoop	
+				break	
+			elif [[ "${resp^}" == "N" ]]; then
+				echo
+				echo "Please enter the directory of the package you would like to update and run this cammand again with the -s (single update) flag."
+				exit
+			fi
+	done
 else
-	echo $gitPull 
-    echo "::: Stay cool :::"
+	if [[ -e .git && -d .git ]]; then
+		aur_update
+	else
+		echo "Not a git repository."
+		exit
+	fi
 fi
+
