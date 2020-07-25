@@ -8,4 +8,4 @@ To use:
   4) Please notify me of issues and improvements either via pull-requests, etc.
 
 Future Enhancements:
- ~~* Checking and updating all AUR packages within a specified directory.~~
+ * ~~Checking and updating all AUR packages within a specified directory.~~
