@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Update AUR package in their respective directory
+# Update AUR package(s) in their respective directory
 
 parentDir=$(pwd)
 
@@ -31,7 +31,7 @@ aur_update () {
 		whileBrk=false
 		
 		while [[ "$whileBrk" == false ]];
-			do
+		do
 			echo
 			echo ":: Proceed with $softName package build? [Y/n]: "
 			read usrIn
@@ -67,42 +67,72 @@ aur_update () {
 	fi
 }
 
+echoDirErr () {
+	echo
+	echo "Error!: directory $parentDir"
+	echo "is not a git repository or AUR applicaton."
+}
 
 dirLoop () {
-	for d in $parentDir/*
+	if [[ "$1" != "" ]]; then
+		updateDir=$(find $parentDir -name $1)
+	else
+		updateDir=$parentDir
+	fi
+
+	cntrlFlow=false
+	
+	for d in $updateDir/*
 	do
-	if [[ -d "$d" ]];then
-		cd "$d"
-		if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-			aur_update $d
+		if [[ -d "$d" && "{d:0:1}" != "." ]]; then
+			cd "$d"
+			if [[ -e .git && -d .git && -e PKGBUILD ]]; then
+				aur_update $d
+			else
+				echoDirErr
+			fi
 		else
-			echo
-			echo "Error: directory $parentDir"
-			echo "is not a git repository or AUR applicaton."
+			cntrlFlow=true	
+			break
 		fi
-	else 
+	done
+
+	if [[ "$cntrlFlow" == true ]]; then
+		cd "$updateDir"
 		if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-			aur_update 
+			aur_update $updateDir 
 		else
-			echo
-			echo "Error!: directory $parentDir"
-			echo "is not a git repository or AUR applicaton."
+			echoDirErr
 			exit
 		fi
 	fi
-	done
 }
 
-while : 
+
+funcBreak=false
+
+while [[ "$funcBreak" == false ]]; 
 do
 	echo
 	echo ":: Run AUR Package Update? Note: this will work to update either a single application or all that reside in a parent folder [Y/n]"
 	read resp
 	resp=${resp:0:1}
 		if [[ "${resp^}" == "Y" ]]; then 
-			echo
-	    	dirLoop	
-			break	
+			funcBreak=true
+			whileBrkDir=false
+			while [[ "$whileBrkDir" == false ]];
+			do
+				echo
+				echo ":: Please enter only the name parent directory or directory AUR software you want to update (Press return if presently in directory):"
+				read pathResp
+					if [[ ${pathResp:0:1} != "/" ]]; then
+						whileBrkDir=true
+						dirLoop	$pathResp
+					else
+						echo
+						echo "Please only enter the name of the directory without \"/\", not the path"
+					fi
+			done	
 		elif [[ "${resp^}" == "N" ]]; then
 			echo
 			echo "Alrighty."
