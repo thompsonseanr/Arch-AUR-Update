@@ -118,6 +118,8 @@ funcBreak=false
 while [[ "$funcBreak" == false ]]; 
 do
 	echo
+	echo ":: Note: New SSH Hostkeys for AUR Server After Migration: https://www.archlinux.org/news/aur-migration-new-ssh-hostkeys/"
+	echo
 	echo ":: Run AUR Package Update? Note: this will work to update either a single application or all that reside in a parent folder [Y/n]"
 	read resp
 	resp=${resp:0:1}
