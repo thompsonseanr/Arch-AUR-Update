@@ -69,7 +69,11 @@ aur_update () {
 
 echoDirErr () {
 	echo
-	echo "Error!: directory $parentDir"
+	if [[ "$1" == "" ]]; then
+		echo "Error!: directory $parentDir"
+	else
+		echo "Error!: directory $d"
+	fi
 	echo "is not a git repository or AUR applicaton."
 }
 
@@ -89,7 +93,7 @@ dirLoop () {
 			if [[ -e .git && -d .git && -e PKGBUILD ]]; then
 				aur_update $d
 			else
-				echoDirErr
+				echoDirErr $d
 			fi
 		else
 			cntrlFlow=true	
@@ -100,7 +104,7 @@ dirLoop () {
 	if [[ "$cntrlFlow" == true ]]; then
 		cd "$updateDir"
 		if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-			aur_update $updateDir 
+			aur_update $updateDir
 		else
 			echoDirErr
 			exit
