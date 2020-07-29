@@ -4,7 +4,7 @@
 
 parentDir=$(pwd)
 
-aur_update () {
+aurUpdate () {
 	if [[ "$1" != "" ]]; then
 		softName=${1##*/}
 	else
@@ -91,7 +91,7 @@ dirLoop () {
 		if [[ -d "$d" && "{d:0:1}" != "." ]]; then
 			cd "$d"
 			if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-				aur_update $d
+				aurUpdate $d
 			else
 				echoDirErr $d
 			fi
@@ -104,7 +104,7 @@ dirLoop () {
 	if [[ "$cntrlFlow" == true ]]; then
 		cd "$updateDir"
 		if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-			aur_update $updateDir
+			aurUpdate $updateDir
 		else
 			echoDirErr
 			exit
@@ -127,7 +127,7 @@ do
 			while [[ "$whileBrkDir" == false ]];
 			do
 				echo
-				echo ":: Please enter only the name parent directory or directory AUR software you want to update (Press return if presently in directory):"
+				echo ":: Please enter only the name of the parent directory or the directory containing a specific piece of AUR software you want to update (Press return if presently in directory):"
 				read pathResp
 					if [[ ${pathResp:0:1} != "/" ]]; then
 						whileBrkDir=true
