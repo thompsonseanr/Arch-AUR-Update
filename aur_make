@@ -2,18 +2,12 @@
 
 # Update AUR package(s) - Work in Progress
 
-parentDir=$(pwd)
-
 aurUpdate () {
-	if [[ "$1" != "" ]]; then
-		softName=${1##*/}
-	else
-		softName=${parentDir##*/}
-	fi
+	softName=${1##*/}
 	softName=${softName^^}
 
 	gitPull=$(git pull)
-	if [[ "$gitPull" != "Already up to date." ]]; then 
+	if [[ $gitPull != "Already up to date." ]]; then 
 		while : 
 		do
 			echo
@@ -30,13 +24,13 @@ aurUpdate () {
 		
 		whileBrk=false
 		
-		while [[ "$whileBrk" == false ]];
+		while [[ $whileBrk == false ]];
 		do
 			echo
 			echo ":: Proceed with $softName package build? [Y/n]: "
 			read usrIn
 			usrIn=${usrIn:0:1}
-			if [[ "${usrIn^}" == "Y" ]]; then
+			if [[ ${usrIn^} == "Y" ]]; then
 				makepkg -sri
 				while :
 				do	
@@ -45,16 +39,16 @@ aurUpdate () {
 					echo ":: Clean $softName repo files? [Y/n]: "
 					read userChoice
 					userChoice=${userChoice:0:1}		
-					if [[ "${userChoice^}" == "Y" ]]; then
+					if [[ ${userChoice^} == "Y" ]]; then
 						git clean -fdx
 						break
-					elif [[ "${userChoice^}" == "N" ]]; then
+					elif [[ ${userChoice^} == "N" ]]; then
 						break
 					fi
 				done				
 				echo
 				echo "::: AUR $softName package now updated and installed. :::"
-			elif [[ "${firstLet^}" == "N" ]]; then
+			elif [[ ${firstLet^} == "N" ]]; then
 				echo "Alright, maybe next time; Later tater!"
 				break
 			fi
@@ -67,35 +61,28 @@ aurUpdate () {
 	fi
 }
 
-echoDirErr () {
-	echo
-	if [[ "$1" == "" ]]; then
-		echo "Error!: directory $parentDir"
-	else
-		echo "Error!: directory $d"
-	fi
-	echo "is not a git repository or AUR applicaton."
-}
-
 dirLoop () {
 	updateDirArr=( $(find ~+ -type f -name "PKGBUILD" 2>&1 | grep -v "Permission denied") )
-		
-	for d in ${updateDirArr[@]}
-	do
-		d=${d%/*}
-		cd "$d"
-		if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-			aurUpdate "$d"
-		else
-			echoDirErr "$d"
-		fi
-	done
+	
+	if [[ $updateDirArr != "" ]]; then	
+		for d in ${updateDirArr[@]}
+		do
+			d=${d%/*}
+			cd $d
+			if [[ -e .git && -d .git && -e PKGBUILD ]]; then
+				aurUpdate $d
+			fi
+		done
+	else
+		echo
+		echo "Directory does not contain an AUR package."
+	fi
 }
 
 
 funcBreak=false
 
-while [[ "$funcBreak" == false ]]; 
+while [[ $funcBreak == false ]]; 
 do
 	echo
 	echo ":: Note: New SSH Hostkeys for AUR Server After Migration: https://www.archlinux.org/news/aur-migration-new-ssh-hostkeys/"
@@ -103,10 +90,10 @@ do
 	echo ":: Run AUR Package Update? Note: this will work to update either a single application or all that reside in a parent folder [Y/n]"
 	read resp
 	resp=${resp:0:1}
-		if [[ "${resp^}" == "Y" ]]; then 
+		if [[ ${resp^} == "Y" ]]; then 
 			funcBreak=true
 			dirLoop
-		elif [[ "${resp^}" == "N" ]]; then
+		elif [[ ${resp^} == "N" ]]; then
 			echo
 			echo "Alrighty."
 			exit
