@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Update AUR package(s) in their respective directory
+# Update AUR package(s) - Work in Progress
 
 parentDir=$(pwd)
 
@@ -78,38 +78,18 @@ echoDirErr () {
 }
 
 dirLoop () {
-	if [[ "$1" != "" ]]; then
-		updateDir=$(find $parentDir -name $1)
-	else
-		updateDir=$parentDir
-	fi
-
-	cntrlFlow=false
-	
-	for d in $updateDir/*
+	updateDirArr=( $(find ~+ -type f -name "PKGBUILD" 2>&1 | grep -v "Permission denied") )
+		
+	for d in ${updateDirArr[@]}
 	do
-		if [[ -d "$d" && "{d:0:1}" != "." ]]; then
-			cd "$d"
-			if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-				aurUpdate $d
-			else
-				echoDirErr $d
-			fi
+		d=${d%/*}
+		cd "$d"
+		if [[ -e .git && -d .git && -e PKGBUILD ]]; then
+			aurUpdate "$d"
 		else
-			cntrlFlow=true	
-			break
+			echoDirErr "$d"
 		fi
 	done
-
-	if [[ "$cntrlFlow" == true ]]; then
-		cd "$updateDir"
-		if [[ -e .git && -d .git && -e PKGBUILD ]]; then
-			aurUpdate $updateDir
-		else
-			echoDirErr
-			exit
-		fi
-	fi
 }
 
 
@@ -125,20 +105,7 @@ do
 	resp=${resp:0:1}
 		if [[ "${resp^}" == "Y" ]]; then 
 			funcBreak=true
-			whileBrkDir=false
-			while [[ "$whileBrkDir" == false ]];
-			do
-				echo
-				echo ":: Please enter only the name of the parent directory or the directory containing a specific piece of AUR software you want to update (Press return if presently in directory):"
-				read pathResp
-					if [[ ${pathResp:0:1} != "/" ]]; then
-						whileBrkDir=true
-						dirLoop	$pathResp
-					else
-						echo
-						echo "Please only enter the name of the directory without \"/\", not the path"
-					fi
-			done	
+			dirLoop
 		elif [[ "${resp^}" == "N" ]]; then
 			echo
 			echo "Alrighty."
