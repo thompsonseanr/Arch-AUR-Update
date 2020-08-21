@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Update AUR package(s) -- Work in Progress
+# Update AUR package(s) - Work in Progress
 
 aurUpdate () {
 	softName=${1##*/}
