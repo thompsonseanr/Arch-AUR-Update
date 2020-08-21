@@ -87,7 +87,7 @@ do
 	echo
 	echo ":: Note: New SSH Hostkeys for AUR Server After Migration: https://www.archlinux.org/news/aur-migration-new-ssh-hostkeys/"
 	echo
-	echo ":: Run AUR Package Update? Note: this will work to update either a single application or all that reside in a parent folder [Y/n]"
+	echo ":: Run AUR Package Update? Note: you may update a single application by entering the cloned repo folder [Y/n]"
 	read resp
 	resp=${resp:0:1}
 		if [[ ${resp^} == "Y" ]]; then 
