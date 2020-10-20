@@ -9,6 +9,7 @@ aurUpdate () {
 	gitPull=$(git pull)
 	if [[ $gitPull != "Already up to date." ]]; then 
 			echo
+			echo ":: $softName has a new version"
 			echo ":: Show git pull output? [Y/n]: "
 			read usrGitIn
 			usrGitIn=${usrGitIn:0:1} 
@@ -17,8 +18,9 @@ aurUpdate () {
 			elif [[ ${usrGitIn^} == "N" || ${usrGitIn^} != "Y" || ${usrGitIn^} != "" ]]; then
 				:
 			fi
+## TODO:After adding the feature to store and check when a package was last built, store if "no" was selected and prompt user to build package again
 			echo
-			echo ":: Proceed with $softName package build? [Y/n]: "
+			echo ":: Proceed with $softName package build? Note: if you select \"no\" to build a package, you will be responsible for manually updating and installing the package [Y/n]: "
 			read usrIn
 			usrIn=${usrIn:0:1}
 			if [[ ${usrIn^} == "Y" || ${usrIn^} == "" ]]; then
