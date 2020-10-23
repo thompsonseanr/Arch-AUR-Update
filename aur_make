@@ -25,16 +25,15 @@ aurUpdate () {
 			usrIn=${usrIn:0:1}
 			if [[ ${usrIn^} == "Y" || ${usrIn^} == "" ]]; then
 				makepkg -sri
-					whileBrk=true
-					echo
-					echo ":: Clean $softName repo files? [Y/n]: "
-					read userChoice
-					userChoice=${userChoice:0:1}		
-					if [[ ${userChoice^} == "Y" || ${userChoice^} == "" ]]; then
-						git clean -fdx
-					elif [[ ${userChoice^} == "N" || ${userChoice^} != "Y" || ${userChoice^} != "" ]]; then
-						:
-					fi
+				echo
+				echo ":: Clean $softName repo files? [Y/n]: "
+				read userChoice
+				userChoice=${userChoice:0:1}		
+				if [[ ${userChoice^} == "Y" || ${userChoice^} == "" ]]; then
+					git clean -fdx
+				elif [[ ${userChoice^} == "N" || ${userChoice^} != "Y" || ${userChoice^} != "" ]]; then
+					:
+				fi
 				echo
 				echo -e "\e[34m:::\e[0m AUR $softName package now updated and installed. \e[34m:::\e[0m"
 			elif [[ ${firstLet^} == "N" || ${firstLet^} != "Y" || ${firstLet^} != "" ]]; then
